@@ -23,6 +23,34 @@ object HapticUtils {
     }
     
     /**
+     * Light haptic feedback (for key presses)
+     */
+    fun light(context: Context) {
+        triggerHaptic(context, HapticType.LIGHT)
+    }
+    
+    /**
+     * Impact haptic feedback (for actions like submit)
+     */
+    fun impact(context: Context) {
+        triggerHaptic(context, HapticType.MEDIUM)
+    }
+    
+    /**
+     * Success haptic feedback (for wins)
+     */
+    fun success(context: Context) {
+        triggerHaptic(context, HapticType.SUCCESS)
+    }
+    
+    /**
+     * Error haptic feedback (for invalid inputs)
+     */
+    fun error(context: Context) {
+        triggerHaptic(context, HapticType.ERROR)
+    }
+    
+    /**
      * Trigger haptic feedback based on the type
      */
     fun triggerHaptic(context: Context, type: HapticType) {

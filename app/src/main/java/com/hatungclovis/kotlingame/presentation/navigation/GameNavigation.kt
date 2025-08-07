@@ -7,6 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.hatungclovis.kotlingame.domain.models.DifficultyLevel
 import com.hatungclovis.kotlingame.presentation.screens.HomeScreen
+import com.hatungclovis.kotlingame.presentation.screens.GameScreen
 
 /**
  * Navigation routes for the game
@@ -76,17 +77,10 @@ fun GameNavHost(
                 DifficultyLevel.MEDIUM
             }
             
-            GameScreenContainer(
+            GameScreen(
                 difficulty = difficulty,
                 wordLength = wordLength,
-                onNavigateBack = {
-                    navController.popBackStack()
-                },
-                onNavigateToHome = {
-                    navController.navigate(GameRoute.Home.route) {
-                        popUpTo(GameRoute.Home.route) { inclusive = true }
-                    }
-                }
+                navController = navController
             )
         }
         
@@ -121,33 +115,8 @@ fun GameNavHost(
 }
 
 /**
- * Placeholder containers for screens (to be implemented)
+ * Placeholder screen component
  */
-@Composable
-private fun GameScreenContainer(
-    difficulty: DifficultyLevel,
-    wordLength: Int,
-    onNavigateBack: () -> Unit,
-    onNavigateToHome: () -> Unit
-) {
-    // TODO: Implement GameScreen - will be replaced with actual GameScreen
-    androidx.compose.foundation.layout.Box(
-        modifier = androidx.compose.foundation.layout.fillMaxSize(),
-        contentAlignment = androidx.compose.ui.Alignment.Center
-    ) {
-        androidx.compose.foundation.layout.Column(
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
-            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
-        ) {
-            androidx.compose.material3.Text("Game Screen - Coming Soon")
-            androidx.compose.material3.Text("Difficulty: ${difficulty.label}")
-            androidx.compose.material3.Text("Word Length: $wordLength")
-            androidx.compose.material3.Button(onClick = onNavigateBack) {
-                androidx.compose.material3.Text("Back to Home")
-            }
-        }
-    }
-}
 
 @Composable
 private fun PlaceholderScreen(

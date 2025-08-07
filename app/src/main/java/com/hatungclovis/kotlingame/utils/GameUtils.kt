@@ -1,5 +1,7 @@
 package com.hatungclovis.kotlingame.utils
 
+import android.content.Context
+import android.content.Intent
 import com.hatungclovis.kotlingame.domain.models.*
 import kotlin.math.max
 
@@ -190,6 +192,74 @@ object GameUtils {
                 appendLine("Average Guesses: ${"%.1f".format(stats.averageGuesses)}")
             }
         }
+    }
+    
+    /**
+     * Format time in milliseconds to readable format
+     */
+    fun formatTime(timeMs: Long): String {
+        val totalSeconds = (timeMs / 1000).toInt()
+        val minutes = totalSeconds / 60
+        val seconds = totalSeconds % 60
+        
+        return if (minutes > 0) {
+            "${minutes}m ${seconds}s"
+        } else {
+            "${seconds}s"
+        }
+    }
+    
+    /**
+     * Update game statistics with the results of a completed game
+     */
+    fun updateStatistics(stats: GameStatistics, gameState: GameState, won: Boolean): GameStatistics {
+        val newGamesPlayed = stats.gamesPlayed + 1
+        val newGamesWon = stats.gamesWon + if (won) 1 else 0
+        val newWinPercentage = if (newGamesPlayed > 0) (newGamesWon.toDouble() / newGamesPlayed * 100) else 0.0
+        
+        val newCurrentStreak = if (won) stats.currentStreak + 1 else 0
+        val newMaxStreak = maxOf(stats.maxStreak, newCurrentStreak)
+        
+        val newTotalScore = stats.totalScore + gameState.score
+        val newAverageScore = if (newGamesPlayed > 0) newTotalScore.toDouble() / newGamesPlayed else 0.0
+        
+        val newTotalGuesses = stats.totalGuesses + gameState.guesses.size
+        val newAverageGuesses = if (newGamesPlayed > 0) newTotalGuesses.toDouble() / newGamesPlayed else 0.0
+        
+        return stats.copy(
+            gamesPlayed = newGamesPlayed,
+            gamesWon = newGamesWon,
+            winPercentage = newWinPercentage,
+            currentStreak = newCurrentStreak,
+            maxStreak = newMaxStreak,
+            totalScore = newTotalScore,
+            averageScore = newAverageScore,
+            totalGuesses = newTotalGuesses,
+            averageGuesses = newAverageGuesses
+        )
+    }
+    
+    /**
+     * Share game result via Android share intent
+     */
+    fun shareGameResult(context: Context, gameState: GameState, won: Boolean) {
+        val shareText = formatShareText(
+            difficulty = gameState.difficulty,
+            wordLength = gameState.wordLength,
+            attempts = gameState.guesses.size,
+            maxAttempts = getMaxAttempts(gameState.difficulty),
+            won = won,
+            score = gameState.score
+        )
+        
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, shareText)
+        }
+        
+        val chooser = Intent.createChooser(shareIntent, "Share Game Result")
+        context.startActivity(chooser)
     }
     
     /**
