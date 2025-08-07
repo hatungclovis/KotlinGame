@@ -117,3 +117,20 @@ data class WordStatistics(
     val availableLengths: List<Int>,
     val source: String = "json"
 )
+
+/**
+ * Game history entry
+ */
+data class GameHistory(
+    val id: Long = 0,
+    val targetWord: String,
+    val difficulty: DifficultyLevel,
+    val wordLength: Int,
+    val attempts: Int,
+    val won: Boolean,
+    val score: Int,
+    val hintsUsed: Int,
+    val playTime: Long, // Duration in milliseconds
+    val timestamp: Long = System.currentTimeMillis(),
+    val guesses: List<String> = emptyList()
+)

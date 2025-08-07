@@ -8,6 +8,9 @@ import androidx.navigation.compose.rememberNavController
 import com.hatungclovis.kotlingame.domain.models.DifficultyLevel
 import com.hatungclovis.kotlingame.presentation.screens.HomeScreen
 import com.hatungclovis.kotlingame.presentation.screens.GameScreen
+import com.hatungclovis.kotlingame.presentation.screens.SettingsScreen
+import com.hatungclovis.kotlingame.presentation.screens.StatisticsScreen
+import com.hatungclovis.kotlingame.presentation.screens.WordAnalysisScreen
 
 /**
  * Navigation routes for the game
@@ -86,23 +89,17 @@ fun GameNavHost(
         
         // Settings Screen
         composable(GameRoute.Settings.route) {
-            PlaceholderScreen("Settings Screen - Coming Soon") {
-                navController.popBackStack()
-            }
+            SettingsScreen(navController = navController)
         }
         
         // Statistics Screen  
         composable(GameRoute.Statistics.route) {
-            PlaceholderScreen("Statistics Screen - Coming Soon") {
-                navController.popBackStack()
-            }
+            StatisticsScreen(navController = navController)
         }
         
         // Word Analysis Screen
         composable(GameRoute.WordAnalysis.route) {
-            PlaceholderScreen("Word Analysis Screen - Coming Soon") {
-                navController.popBackStack()
-            }
+            WordAnalysisScreen(navController = navController)
         }
         
         // About Screen

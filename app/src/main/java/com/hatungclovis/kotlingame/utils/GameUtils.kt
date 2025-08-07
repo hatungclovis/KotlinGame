@@ -263,6 +263,34 @@ object GameUtils {
     }
     
     /**
+     * Share statistics via Android share intent
+     */
+    fun shareStatistics(context: Context, statistics: GameStatistics) {
+        val statsText = buildString {
+            appendLine("📊 Word Game Statistics")
+            appendLine("Games Played: ${statistics.gamesPlayed}")
+            appendLine("Win Rate: ${statistics.winPercentage.toInt()}%")
+            appendLine("Current Streak: ${statistics.currentStreak}")
+            appendLine("Best Streak: ${statistics.maxStreak}")
+            appendLine("Average Score: ${statistics.averageScore.toInt()}")
+            if (statistics.averageGuesses > 0) {
+                appendLine("Average Guesses: ${"%.1f".format(statistics.averageGuesses)}")
+            }
+            appendLine()
+            appendLine("🎯 Enhanced Word Game by Clovis")
+        }
+        
+        val shareIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, statsText)
+        }
+        
+        val chooser = Intent.createChooser(shareIntent, "Share Statistics")
+        context.startActivity(chooser)
+    }
+    
+    /**
      * Debounce function implementation using coroutines
      */
     class Debouncer(private val delayMs: Long) {

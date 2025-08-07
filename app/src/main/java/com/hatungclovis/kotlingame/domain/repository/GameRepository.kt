@@ -10,37 +10,22 @@ import kotlinx.coroutines.flow.Flow
 interface GameRepository {
     
     // Settings
-    suspend fun getGameSettings(): Result<GameSettings>
-    fun getGameSettingsFlow(): Flow<GameSettings>
-    suspend fun updateGameSettings(settings: GameSettings): Result<Unit>
-    suspend fun resetGameSettings(): Result<Unit>
+    suspend fun getSettings(): GameSettings?
+    suspend fun saveSettings(settings: GameSettings)
+    suspend fun resetSettings()
     
     // Statistics
-    suspend fun getGameStatistics(): Result<GameStatistics>
-    fun getGameStatisticsFlow(): Flow<GameStatistics>
-    suspend fun updateGameStatistics(stats: GameStatistics): Result<Unit>
-    suspend fun addGameResult(
-        difficulty: DifficultyLevel,
-        wordLength: Int,
-        targetWord: String,
-        guesses: List<String>,
-        won: Boolean,
-        score: Int,
-        attemptsUsed: Int,
-        hintsUsed: Int,
-        startTime: Long,
-        endTime: Long
-    ): Result<Unit>
-    suspend fun resetGameStatistics(): Result<Unit>
+    suspend fun getStatistics(): GameStatistics?
+    suspend fun saveStatistics(stats: GameStatistics)
+    suspend fun resetStatistics()
     
     // Game History
-    suspend fun getGameHistory(): Result<List<GameHistoryEntity>>
-    fun getGameHistoryFlow(): Flow<List<GameHistoryEntity>>
-    suspend fun getGameHistoryByDifficulty(difficulty: DifficultyLevel): Result<List<GameHistoryEntity>>
-    suspend fun clearGameHistory(): Result<Unit>
+    suspend fun getGameHistory(): List<GameHistory>
+    suspend fun saveGameHistory(history: GameHistory)
+    suspend fun clearGameHistory()
     
     // Game State Persistence (for current game)
-    suspend fun saveCurrentGameState(gameState: GameState): Result<Unit>
-    suspend fun loadCurrentGameState(): Result<GameState?>
-    suspend fun clearCurrentGameState(): Result<Unit>
+    suspend fun saveCurrentGameState(gameState: GameState)
+    suspend fun loadCurrentGameState(): GameState?
+    suspend fun clearCurrentGameState()
 }
