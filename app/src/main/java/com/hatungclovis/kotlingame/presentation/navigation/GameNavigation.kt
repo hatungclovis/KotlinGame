@@ -1,0 +1,171 @@
+package com.hatungclovis.kotlingame.presentation.navigation
+
+import androidx.compose.runtime.Composable
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.hatungclovis.kotlingame.domain.models.DifficultyLevel
+import com.hatungclovis.kotlingame.presentation.screens.HomeScreen
+
+/**
+ * Navigation routes for the game
+ */
+sealed class GameRoute(val route: String) {
+    object Home : GameRoute("home")
+    object Game : GameRoute("game/{difficulty}/{wordLength}") {
+        fun createRoute(difficulty: DifficultyLevel, wordLength: Int): String {
+            return "game/${difficulty.name}/${wordLength}"
+        }
+    }
+    object Settings : GameRoute("settings")
+    object Statistics : GameRoute("statistics")
+    object WordAnalysis : GameRoute("word_analysis")
+    object About : GameRoute("about")
+}
+
+/**
+ * Main navigation host for the game
+ */
+@Composable
+fun GameNavHost(
+    navController: NavHostController = rememberNavController(),
+    startDestination: String = GameRoute.Home.route
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        // Home Screen
+        composable(GameRoute.Home.route) {
+            HomeScreen(
+                onNavigateToGame = { difficulty, wordLength ->
+                    navController.navigate(
+                        GameRoute.Game.createRoute(difficulty, wordLength)
+                    )
+                },
+                onNavigateToSettings = {
+                    navController.navigate(GameRoute.Settings.route)
+                },
+                onNavigateToStatistics = {
+                    navController.navigate(GameRoute.Statistics.route)
+                },
+                onNavigateToWordAnalysis = {
+                    navController.navigate(GameRoute.WordAnalysis.route)
+                }
+            )
+        }
+        
+        // Game Screen
+        composable(
+            route = GameRoute.Game.route,
+            arguments = listOf(
+                androidx.navigation.navArgument("difficulty") {
+                    type = androidx.navigation.NavType.StringType
+                },
+                androidx.navigation.navArgument("wordLength") {
+                    type = androidx.navigation.NavType.IntType
+                }
+            )
+        ) { backStackEntry ->
+            val difficultyString = backStackEntry.arguments?.getString("difficulty") ?: ""
+            val wordLength = backStackEntry.arguments?.getInt("wordLength") ?: 5
+            val difficulty = try {
+                DifficultyLevel.valueOf(difficultyString)
+            } catch (e: IllegalArgumentException) {
+                DifficultyLevel.MEDIUM
+            }
+            
+            GameScreenContainer(
+                difficulty = difficulty,
+                wordLength = wordLength,
+                onNavigateBack = {
+                    navController.popBackStack()
+                },
+                onNavigateToHome = {
+                    navController.navigate(GameRoute.Home.route) {
+                        popUpTo(GameRoute.Home.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Settings Screen
+        composable(GameRoute.Settings.route) {
+            PlaceholderScreen("Settings Screen - Coming Soon") {
+                navController.popBackStack()
+            }
+        }
+        
+        // Statistics Screen  
+        composable(GameRoute.Statistics.route) {
+            PlaceholderScreen("Statistics Screen - Coming Soon") {
+                navController.popBackStack()
+            }
+        }
+        
+        // Word Analysis Screen
+        composable(GameRoute.WordAnalysis.route) {
+            PlaceholderScreen("Word Analysis Screen - Coming Soon") {
+                navController.popBackStack()
+            }
+        }
+        
+        // About Screen
+        composable(GameRoute.About.route) {
+            PlaceholderScreen("About Screen - Coming Soon") {
+                navController.popBackStack()
+            }
+        }
+    }
+}
+
+/**
+ * Placeholder containers for screens (to be implemented)
+ */
+@Composable
+private fun GameScreenContainer(
+    difficulty: DifficultyLevel,
+    wordLength: Int,
+    onNavigateBack: () -> Unit,
+    onNavigateToHome: () -> Unit
+) {
+    // TODO: Implement GameScreen - will be replaced with actual GameScreen
+    androidx.compose.foundation.layout.Box(
+        modifier = androidx.compose.foundation.layout.fillMaxSize(),
+        contentAlignment = androidx.compose.ui.Alignment.Center
+    ) {
+        androidx.compose.foundation.layout.Column(
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+        ) {
+            androidx.compose.material3.Text("Game Screen - Coming Soon")
+            androidx.compose.material3.Text("Difficulty: ${difficulty.label}")
+            androidx.compose.material3.Text("Word Length: $wordLength")
+            androidx.compose.material3.Button(onClick = onNavigateBack) {
+                androidx.compose.material3.Text("Back to Home")
+            }
+        }
+    }
+}
+
+@Composable
+private fun PlaceholderScreen(
+    title: String,
+    onNavigateBack: () -> Unit
+) {
+    androidx.compose.foundation.layout.Box(
+        modifier = androidx.compose.foundation.layout.fillMaxSize(),
+        contentAlignment = androidx.compose.ui.Alignment.Center
+    ) {
+        androidx.compose.foundation.layout.Column(
+            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally,
+            verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(16.dp)
+        ) {
+            androidx.compose.material3.Text(title)
+            androidx.compose.material3.Button(onClick = onNavigateBack) {
+                androidx.compose.material3.Text("Back")
+            }
+        }
+    }
+}
